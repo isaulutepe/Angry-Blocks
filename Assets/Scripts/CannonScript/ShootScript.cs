@@ -34,7 +34,7 @@ public class ShootScript : MonoBehaviour
     }
     private void Update()
     {
-        ballBody = ballPrefab.GetComponent<Rigidbody2D>(); 
+        ballBody = ballPrefab.GetComponent<Rigidbody2D>();
         Aim();
         Rotate();
     }
@@ -60,6 +60,7 @@ public class ShootScript : MonoBehaviour
         else if (aiming && !shoot)
         {
             aiming = false;
+            StartCoroutine(Shoot());
             HideDost();
         }
     }
@@ -106,12 +107,24 @@ public class ShootScript : MonoBehaviour
     {
         var direction = GameObject.Find("dot (1)").transform.position - transform.position;
         //Cannon nesnesi ile birinci top arasýndaki mesafeyi ölçtük. 
-        var angle=Math.Atan2(direction.y, direction.x)* Mathf.Rad2Deg;
+        var angle = Math.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         //Burada açý hesaplama iþlemi yapýlýr.
         //direction.y ve direction.x deðerleri bir noktadan baþka bir noktaya giden bir doðruyu temsil ediyo.
         //Math.Atan2 --> bu ön vectörünün x eksni ile yaptýðý açýyý Ranyan olarak hesaplar.
         //Mathf.Rad2Deg--> bu da randyan olan deðeri açý cinsine dönüþtürür.
 
         transform.rotation = Quaternion.AngleAxis((float)angle, Vector3.forward);
+    }
+    IEnumerator Shoot()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(0.07f);
+            GameObject ball = Instantiate(ballPrefab, transform.position, Quaternion.identity);
+            ball.name = "Ball";
+            ball.transform.SetParent (ballContainer.transform); //Oluþan toplarý bu nesne altýnda toplar.
+            ballBody = ball.GetComponent<Rigidbody2D>();
+            ballBody.AddForce(ShootForce(Input.mousePosition));
+        }
     }
 }
