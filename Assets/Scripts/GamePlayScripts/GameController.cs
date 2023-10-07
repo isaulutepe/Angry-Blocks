@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -16,8 +17,13 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        PlayerPrefs.DeleteAll();
         Physics2D.gravity = new Vector2(0, -17);
-        SpawnNewLevel(0, 17, 3, 5);
+        SpawnLevel();
+    }
+    private void Update()
+    {
+        CheckBlocks();
     }
     void SpawnNewLevel(int numberLevel1, int numberLevel2, int min, int max)
     {
@@ -33,6 +39,53 @@ public class GameController : MonoBehaviour
         SetBlocksCount(min, max);
 
     }
+    void SpawnLevel()
+    {
+        if (PlayerPrefs.GetInt("Level", 0) == 0) //Ýlk seviye
+        {
+            SpawnNewLevel(0, 17, 3, 5);
+        }
+        if (PlayerPrefs.GetInt("Level") == 1)
+        {
+            SpawnNewLevel(0, 18, 3, 5);
+        }
+        if (PlayerPrefs.GetInt("Level") == 2)
+        {
+            SpawnNewLevel(1, 13, 9, 15);
+        }
+        if (PlayerPrefs.GetInt("Level") == 3)
+        {
+            SpawnNewLevel(3, 5, 8, 9);
+        }
+        if (PlayerPrefs.GetInt("Level") == 4)
+        {
+            SpawnNewLevel(8, 17, 7, 16);
+        }
+        if (PlayerPrefs.GetInt("Level") == 5)
+        {
+            SpawnNewLevel(9, 24, 13, 15);
+        }
+        if (PlayerPrefs.GetInt("Level") == 6)
+        {
+            SpawnNewLevel(3, 42, 13, 25);
+        }
+        if (PlayerPrefs.GetInt("Level") == 7)
+        {
+            SpawnNewLevel(5, 35, 32, 35);
+        }
+        if (PlayerPrefs.GetInt("Level") == 8)
+        {
+            SpawnNewLevel(8, 13, 21, 17);
+        }
+        if (PlayerPrefs.GetInt("Level") == 9)
+        {
+            SpawnNewLevel(21, 43, 31, 25);
+        }
+        if (PlayerPrefs.GetInt("Level") == 10)
+        {
+            SpawnNewLevel(0, 41, 26, 43);
+        }
+    }
     void SetBlocksCount(int min, int max) //Nu iki deðer arasýnda random bir deðer belirle.
     {
         block = GameObject.FindGameObjectsWithTag("Block");
@@ -40,6 +93,24 @@ public class GameController : MonoBehaviour
         {
             int count = Random.Range(min, max);
             block[i].GetComponent<Block>().SetStartingCount(count); //Daha sonra bu deðeri Block scriptindeki Methoda parametre olarak gönder.
+        }
+    }
+    public void CheckBlocks()
+    {
+        block = GameObject.FindGameObjectsWithTag("Block");
+        if (block.Length < 1)
+        {
+            PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
+            RemoveBalls();
+            SpawnLevel();
+        }
+    }
+    void RemoveBalls()
+    {
+        GameObject[] balls = GameObject.FindGameObjectsWithTag("Ball");
+        for (int i = 0; i < balls.Length; i++)
+        {
+            Destroy(balls[i]);
         }
     }
 }
