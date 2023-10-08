@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class ShootScript : MonoBehaviour
 {
+    private GameController gc;
     public float power = 2f; //Fýrlatma günü
     private int dots = 15; //Top sayýsý
 
@@ -22,9 +23,13 @@ public class ShootScript : MonoBehaviour
     public GameObject ballPrefab;
     public GameObject ballContainer;
 
+    private void Awake()
+    {
+        gc = GameObject.Find("GameController").GetComponent<GameController>();
+        Dots = GameObject.Find("Dots"); //An game obje içinde 15 adet dot nesnesi var.
+    }
     private void Start()
     {
-        Dots = GameObject.Find("Dots"); //An game obje içinde 15 adet dot nesnesi var.
         projectilesPack = Dots.transform.Cast<Transform>().ToList().ConvertAll(t => t.gameObject);
         //Bu iþlemde, Dots adlý bir GameObject’in tüm alt nesnelerinin (children) bir listesini oluþturuyorsunuz. Bu listeyi projectilesPack adlý bir deðiþkene atýyorsunuz. Dost nesnesinin transform özelliðini transform nesnesine dönüþtüyüoruz sonra da bunu bir transorm listesi yapýyoruz ardýndan bu listedeki bütün elemanlarý tekrar bir gameonjeye çeviriyoruz.
 
@@ -35,8 +40,12 @@ public class ShootScript : MonoBehaviour
     private void Update()
     {
         ballBody = ballPrefab.GetComponent<Rigidbody2D>();
-        Aim();
-        Rotate();
+
+        if (gc.shotCount <= 3)
+        {
+            Aim();
+            Rotate();
+        }
     }
 
     private void Aim()
@@ -51,6 +60,7 @@ public class ShootScript : MonoBehaviour
             {
                 aiming = true;
                 startPosition = Input.mousePosition; //Mouse poziyonunu baþlangýç pozisyonu kabul et.
+                gc.CheckShotCount();
             }
             else
             {
@@ -60,8 +70,10 @@ public class ShootScript : MonoBehaviour
         else if (aiming && !shoot)
         {
             aiming = false;
-            StartCoroutine(Shoot());
             HideDost();
+            StartCoroutine(Shoot());
+            if (gc.shotCount == 1)
+                Camera.main.GetComponent<CameraTransition>().RotateCameraToSide(); //Kamerayý yana çevir.
         }
     }
     Vector2 ShootForce(Vector2 force)
@@ -122,9 +134,10 @@ public class ShootScript : MonoBehaviour
             yield return new WaitForSeconds(0.07f);
             GameObject ball = Instantiate(ballPrefab, transform.position, Quaternion.identity);
             ball.name = "Ball";
-            ball.transform.SetParent (ballContainer.transform); //Oluþan toplarý bu nesne altýnda toplar.
+            ball.transform.SetParent(ballContainer.transform); //Oluþan toplarý bu nesne altýnda toplar.
             ballBody = ball.GetComponent<Rigidbody2D>();
             ballBody.AddForce(ShootForce(Input.mousePosition));
         }
+        gc.shotCount++;
     }
 }

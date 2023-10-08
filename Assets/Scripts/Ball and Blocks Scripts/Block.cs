@@ -23,8 +23,13 @@ public class Block : MonoBehaviour
         if (collision.collider.name=="Ball" && count >0) //Top temas ediyorsa.
         {
             count--;
-            if (count == 0) 
+            Camera.main.GetComponent<CameraTransition>().Shake(); //Top arýldýgýnda small titreme baþlar.
+            if (count == 0)
+            {
                 Destroy(gameObject); //Temas tamemen bitince yani çarpma sýfýra inince blok nesnesi silinecek.
+                Camera.main.GetComponent<CameraTransition>().MediumShake(); //Bloklar siliþnirken kamerada sarsýlam hareketi gerçekleþecek.
+            }
+
         }
     }
 }

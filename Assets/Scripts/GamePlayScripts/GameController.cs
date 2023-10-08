@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,8 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    private ShotCountText shotCountText;
+
     public GameObject[] block;
 
     public List<GameObject> levels; //Bölümleri tutacak olan liste
@@ -14,7 +17,12 @@ public class GameController : MonoBehaviour
     private Vector2 level1Pos;
     private Vector2 level2Pos;
 
+    public int shotCount;
 
+    private void Awake()
+    {
+        shotCountText = GameObject.Find("ShotCountText").GetComponent<ShotCountText>();
+    }
     private void Start()
     {
         PlayerPrefs.DeleteAll();
@@ -27,6 +35,11 @@ public class GameController : MonoBehaviour
     }
     void SpawnNewLevel(int numberLevel1, int numberLevel2, int min, int max)
     {
+        if (shotCount == 1)
+            Camera.main.GetComponent<CameraTransition>().RotateCameraToFront(); //Kamerayý Öne Çevir.
+
+        shotCount = 1;
+
         level1Pos = new Vector2(3.5f, -1);
         level2Pos = new Vector2(3.5f, -6f);
 
@@ -41,6 +54,7 @@ public class GameController : MonoBehaviour
     }
     void SpawnLevel()
     {
+
         if (PlayerPrefs.GetInt("Level", 0) == 0) //Ýlk seviye
         {
             SpawnNewLevel(0, 17, 3, 5);
@@ -91,7 +105,7 @@ public class GameController : MonoBehaviour
         block = GameObject.FindGameObjectsWithTag("Block");
         for (int i = 0; i < block.Length; i++)
         {
-            int count = Random.Range(min, max);
+            int count = UnityEngine.Random.Range(min, max);
             block[i].GetComponent<Block>().SetStartingCount(count); //Daha sonra bu deðeri Block scriptindeki Methoda parametre olarak gönder.
         }
     }
@@ -111,6 +125,27 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < balls.Length; i++)
         {
             Destroy(balls[i]);
+        }
+    }
+    public void CheckShotCount()
+    {
+        if (shotCount == 1)
+        {
+            shotCountText.SetTopText("SHOT");
+            shotCountText.SetBottomText("1/3");
+            shotCountText.Flash();
+        }
+        if (shotCount == 2)
+        {
+            shotCountText.SetTopText("SHOT");
+            shotCountText.SetBottomText("2/3");
+            shotCountText.Flash();
+        }
+        if (shotCount == 3)
+        {
+            shotCountText.SetTopText("SHOT");
+            shotCountText.SetBottomText("Final");
+            shotCountText.Flash();
         }
     }
 }
