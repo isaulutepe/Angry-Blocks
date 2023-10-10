@@ -72,8 +72,6 @@ public class ShootScript : MonoBehaviour
             aiming = false;
             HideDost();
             StartCoroutine(Shoot());
-            if (gc.shotCount == 1)
-                Camera.main.GetComponent<CameraTransition>().RotateCameraToSide(); //Kamerayý yana çevir.
         }
     }
     Vector2 ShootForce(Vector2 force)
@@ -129,7 +127,7 @@ public class ShootScript : MonoBehaviour
     }
     IEnumerator Shoot()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < gc.ballsCount; i++)
         {
             yield return new WaitForSeconds(0.07f);
             GameObject ball = Instantiate(ballPrefab, transform.position, Quaternion.identity);
@@ -137,7 +135,12 @@ public class ShootScript : MonoBehaviour
             ball.transform.SetParent(ballContainer.transform); //Oluþan toplarý bu nesne altýnda toplar.
             ballBody = ball.GetComponent<Rigidbody2D>();
             ballBody.AddForce(ShootForce(Input.mousePosition));
+
+            int balls = gc.ballsCount - i;
+            gc.ballsCountText.text = (gc.ballsCount - i - 1).ToString();
         }
+        yield return new WaitForSeconds(0.5f);
         gc.shotCount++;
+        gc.ballsCountText.text=gc.ballsCount.ToString();
     }
 }

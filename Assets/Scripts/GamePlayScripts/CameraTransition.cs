@@ -37,37 +37,4 @@ public class CameraTransition : MonoBehaviour
     {
         shakeAmout = Mathf.Min(0.15f, shakeAmout + 0.015f);
     }
-
-    public void RotateCameraToSide()
-    {
-        StartCoroutine(RotateCameraToSideRoutine());
-    }
-    public void RotateCameraToFront()
-    {
-        StartCoroutine(RotateCameraToFrontRoutine());
-    }
-    IEnumerator RotateCameraToSideRoutine()
-    {
-        int frames = 20; //Kameranýn belirli bir açýya dönmesi için gerekli zaman.
-        float increment = rotateSemiAmount / (float)frames; //Açýsal dönme miktarýnýn eþit aralýklarla gerçekleþmesini saðlak için.
-        for (int i = 0; i < frames; i++)//Kamera Döndürme iþlemi gerçekleþtirilir.
-        {
-            cameraContainer.RotateAround(Vector3.zero, Vector3.up, increment);
-            yield return null;
-        }
-        yield break;
-    }
-    IEnumerator RotateCameraToFrontRoutine()
-    {
-        int frames = 60;
-        float increment = rotateSemiAmount / (float)frames;
-        for (int i = 0; i < frames; i++)
-        {
-            cameraContainer.RotateAround(Vector3.zero, Vector3.up, -increment);
-            yield return null;
-        }
-        cameraContainer.localEulerAngles = new Vector3(0, 0, 0);
-        yield break;
-    }
-
 }

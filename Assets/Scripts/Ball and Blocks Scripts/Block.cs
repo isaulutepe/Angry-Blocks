@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Block : MonoBehaviour
 {
     private int count;
+
+    public Text countText;
+
+
 
     private void Update()
     {
@@ -16,14 +21,17 @@ public class Block : MonoBehaviour
     public void SetStartingCount(int count)
     {
         this.count = count;
+        countText.text = count.ToString();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.name=="Ball" && count >0) //Top temas ediyorsa.
+        if (collision.collider.name == "Ball" && count > 0) //Top temas ediyorsa.
         {
             count--;
             Camera.main.GetComponent<CameraTransition>().Shake(); //Top arýldýgýnda small titreme baþlar.
+            countText.text = count.ToString();
+
             if (count == 0)
             {
                 Destroy(gameObject); //Temas tamemen bitince yani çarpma sýfýra inince blok nesnesi silinecek.
