@@ -41,11 +41,11 @@ public class GameController : MonoBehaviour
     }
     void SpawnNewLevel(int numberLevel1, int numberLevel2, int min, int max)
     {
-       
+
         shotCount = 1;
 
-        level1Pos = new Vector2(3.5f, -1);
-        level2Pos = new Vector2(3.5f, -6f);
+        level1Pos = new Vector2(2.4f, -1);
+        level2Pos = new Vector2(2.4f, -6f);
 
         level1 = levels[numberLevel1];
         level2 = levels[numberLevel2];
@@ -69,19 +69,19 @@ public class GameController : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("Level") == 2)
         {
-            SpawnNewLevel(1, 13, 9, 15);
+            SpawnNewLevel(0, 18, 3, 5);
         }
         if (PlayerPrefs.GetInt("Level") == 3)
         {
-            SpawnNewLevel(3, 5, 8, 9);
+            SpawnNewLevel(3, 5, 4, 6);
         }
         if (PlayerPrefs.GetInt("Level") == 4)
         {
-            SpawnNewLevel(8, 17, 7, 16);
+            SpawnNewLevel(8, 6, 3, 5);
         }
         if (PlayerPrefs.GetInt("Level") == 5)
         {
-            SpawnNewLevel(9, 24, 13, 15);
+            SpawnNewLevel(9, 13, 13, 15);
         }
         if (PlayerPrefs.GetInt("Level") == 6)
         {

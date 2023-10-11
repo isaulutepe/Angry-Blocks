@@ -36,6 +36,7 @@ public class Block : MonoBehaviour
             {
                 Destroy(gameObject); //Temas tamemen bitince yani çarpma sýfýra inince blok nesnesi silinecek.
                 Camera.main.GetComponent<CameraTransition>().MediumShake(); //Bloklar siliþnirken kamerada sarsýlam hareketi gerçekleþecek.
+                GameObject.Find("ExstraBallProgress").GetComponent<Progress>().IncreaseCurrentWitdh();
             }
 
         }
