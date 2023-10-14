@@ -2,17 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
     private ShotCountText shotCountText;
+
     public Text ballsCountText;
 
     public GameObject[] block;
 
-    public List<GameObject> levels; //Bölümleri tutacak olan liste
+    public List<GameObject> levels;
+
     private GameObject level1;
     private GameObject level2;
 
@@ -20,23 +23,47 @@ public class GameController : MonoBehaviour
     private Vector2 level2Pos;
 
     public int shotCount;
+    public int score;
     public int ballsCount;
+
+    private GameObject ballContainer;
+    public GameObject gameOver; //GameOver paneli
+
+    private bool firstShot;
 
     private void Awake()
     {
         shotCountText = GameObject.Find("ShotCountText").GetComponent<ShotCountText>();
         ballsCountText = GameObject.Find("BallCountText").GetComponent<Text>();
+        ballContainer = GameObject.Find("BallsContainer");
     }
     private void Start()
     {
+        gameOver.SetActive(false);
         PlayerPrefs.DeleteKey("Level");
+
         ballsCount = PlayerPrefs.GetInt("BallsCount", 5);
         ballsCountText.text = ballsCount.ToString();
+
         Physics2D.gravity = new Vector2(0, -17);
+
         SpawnLevel();
     }
     private void Update()
     {
+        if (ballContainer.transform.childCount == 0 && shotCount == 4) //Aktif top kalmadýysa ve 3 atýþ yapýldýysa oyunu bitir.
+        {
+            gameOver.SetActive(true);
+        }
+        if (shotCount > 2)
+        {
+            firstShot = false;
+        }
+        else
+        {
+            firstShot = true;
+        }
+
         CheckBlocks();
     }
     void SpawnNewLevel(int numberLevel1, int numberLevel2, int min, int max)
@@ -58,55 +85,34 @@ public class GameController : MonoBehaviour
     }
     void SpawnLevel()
     {
-
-        if (PlayerPrefs.GetInt("Level", 0) == 0) //Ýlk seviye
-        {
+        if (PlayerPrefs.GetInt("Level", 0) == 0)
             SpawnNewLevel(0, 17, 3, 5);
-        }
+
         if (PlayerPrefs.GetInt("Level") == 1)
-        {
-            SpawnNewLevel(0, 18, 3, 5);
-        }
+            SpawnNewLevel(1, 18, 3, 5);
+
         if (PlayerPrefs.GetInt("Level") == 2)
-        {
-            SpawnNewLevel(0, 18, 3, 5);
-        }
+            SpawnNewLevel(2, 19, 3, 6);
+
         if (PlayerPrefs.GetInt("Level") == 3)
-        {
-            SpawnNewLevel(3, 5, 4, 6);
-        }
+            SpawnNewLevel(5, 20, 4, 7);
+
         if (PlayerPrefs.GetInt("Level") == 4)
-        {
-            SpawnNewLevel(8, 6, 3, 5);
-        }
+            SpawnNewLevel(12, 28, 5, 8);
+
         if (PlayerPrefs.GetInt("Level") == 5)
-        {
-            SpawnNewLevel(9, 13, 13, 15);
-        }
+            SpawnNewLevel(14, 29, 7, 10);
+
         if (PlayerPrefs.GetInt("Level") == 6)
-        {
-            SpawnNewLevel(3, 42, 13, 25);
-        }
+            SpawnNewLevel(15, 30, 6, 12);
+
         if (PlayerPrefs.GetInt("Level") == 7)
-        {
-            SpawnNewLevel(5, 35, 32, 35);
-        }
-        if (PlayerPrefs.GetInt("Level") == 8)
-        {
-            SpawnNewLevel(8, 13, 21, 17);
-        }
-        if (PlayerPrefs.GetInt("Level") == 9)
-        {
-            SpawnNewLevel(21, 43, 31, 25);
-        }
-        if (PlayerPrefs.GetInt("Level") == 10)
-        {
-            SpawnNewLevel(0, 41, 26, 43);
-        }
+            SpawnNewLevel(16, 31, 9, 15);
     }
     void SetBlocksCount(int min, int max) //Nu iki deðer arasýnda random bir deðer belirle.
     {
         block = GameObject.FindGameObjectsWithTag("Block");
+
         for (int i = 0; i < block.Length; i++)
         {
             int count = UnityEngine.Random.Range(min, max);
@@ -118,9 +124,22 @@ public class GameController : MonoBehaviour
         block = GameObject.FindGameObjectsWithTag("Block");
         if (block.Length < 1)
         {
-            PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
             RemoveBalls();
+            PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
             SpawnLevel();
+
+            //Top sayýsýnda deðiþme oldugunda kaydedilmesi için, ekstra top ile devam edilebilmesi için.
+            if (ballsCount >= PlayerPrefs.GetInt("BallsCount", 5))
+                PlayerPrefs.SetInt("BallsCount", ballsCount);
+            
+            if (firstShot)
+            {
+                score += 5;
+            }
+            else
+            {
+                score += 3;
+            }
         }
     }
     void RemoveBalls()

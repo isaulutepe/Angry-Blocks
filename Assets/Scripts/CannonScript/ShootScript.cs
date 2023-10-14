@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ShootScript : MonoBehaviour
 {
@@ -41,13 +42,17 @@ public class ShootScript : MonoBehaviour
     {
         ballBody = ballPrefab.GetComponent<Rigidbody2D>();
 
-        if (gc.shotCount <= 3)
+        if (gc.shotCount <= 3 && !IsMouseOverUI()) //Eger shotcount 3 den küçük ve fake bir UI nesnesinde deðilse iþlem gerçekleþir.
         {
             Aim();
             Rotate();
         }
     }
-
+    private bool IsMouseOverUI() //Mouse bir UI üzerinde mi kontrol etmek için.
+    {
+        return EventSystem.current.IsPointerOverGameObject();
+        //Fare imleci bir UI üzerinde mý onu kontrol eden bir kod satýrýdýr.
+    }
     private void Aim()
     {
         if (shoot)

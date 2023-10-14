@@ -5,7 +5,9 @@ using UnityEngine;
 public class Progress : MonoBehaviour
 {
     public RectTransform extraBallInner;
+
     private GameController gameController;
+
     private float curretWidth, addWidth, totalWidth;
 
     private void Awake()

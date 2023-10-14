@@ -37,14 +37,17 @@ public class ShotCountText : MonoBehaviour
 
     IEnumerator FlashRoutine() //Yanýp Sönme efekti verir.
     {
-        for (int i = 0; i < 60; i++)
+        for (int i = 0; i <= 60; i++)
         {
-            if (i >= 40) //40 dan sonra alpha deðerini azaltmaya baþlar.
+            transform.localScale = Vector3.one * scaleCurve.Evaluate((float)i / 50);
+            if (i >= 40)
             {
                 cg.alpha = (float)(60 - i) / 20;
-                yield return null; //Bir falme bekle
             }
+            yield return null;
+
         }
+
         yield break;
     }
 }

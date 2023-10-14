@@ -9,8 +9,13 @@ public class Block : MonoBehaviour
 
     public Text countText;
 
+    private AudioSource bounceSource;
 
 
+    private void Awake()
+    {
+        bounceSource = GameObject.Find("BounceSound").GetComponent<AudioSource>();
+    }
     private void Update()
     {
         if (transform.position.y <= -10) //Bloklar aþaðý düþerse silinecek.
@@ -31,7 +36,7 @@ public class Block : MonoBehaviour
             count--;
             Camera.main.GetComponent<CameraTransition>().Shake(); //Top arýldýgýnda small titreme baþlar.
             countText.text = count.ToString();
-
+            bounceSource.Play();
             if (count == 0)
             {
                 Destroy(gameObject); //Temas tamemen bitince yani çarpma sýfýra inince blok nesnesi silinecek.
