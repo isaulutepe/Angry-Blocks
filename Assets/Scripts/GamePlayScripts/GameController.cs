@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class GameController : MonoBehaviour
 {
@@ -40,7 +38,7 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         gameOver.SetActive(false);
-        PlayerPrefs.DeleteKey("Level");
+        PlayerPrefs.DeleteAll();
 
         ballsCount = PlayerPrefs.GetInt("BallsCount", 5);
         ballsCountText.text = ballsCount.ToString();
@@ -108,6 +106,61 @@ public class GameController : MonoBehaviour
 
         if (PlayerPrefs.GetInt("Level") == 7)
             SpawnNewLevel(16, 31, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 8)
+            SpawnNewLevel(18, 6, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 9)
+            SpawnNewLevel(20, 8, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 10)
+            SpawnNewLevel(31, 16, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 11)
+            SpawnNewLevel(28, 3, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 12)
+            SpawnNewLevel(24, 12, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 13)
+            SpawnNewLevel(33, 32, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 14)
+            SpawnNewLevel(44, 15, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 15)
+            SpawnNewLevel(19, 18, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 16)
+            SpawnNewLevel(28, 27, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 17)
+            SpawnNewLevel(24, 25, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 18)
+            SpawnNewLevel(37, 33, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 19)
+            SpawnNewLevel(25, 4, 9, 15);
+
+        if (PlayerPrefs.GetInt("Level") == 20)
+            SpawnNewLevel(33, 35, 9, 15);
+
+        int random1, random2, rndmin, rndmax;
+        random1 = Random.Range(0, 44);
+        random2 = Random.Range(0, 44);
+        rndmin = Random.Range(1, 9);
+        rndmax = Random.Range(4, 18);
+
+        if (random1 == random2) //Ayný sayi üretilirse random 2 deðiþecek.
+        {
+            random2 = Random.Range(0, 44);
+        }
+        if (PlayerPrefs.GetInt("Level") > 20) //Level 20 den büyükse artýk random bölüm oluþturacak. Oyun son bulmasýn diye.
+        {
+            SpawnNewLevel(random1, random2, rndmin, rndmax);
+        }
+
     }
     void SetBlocksCount(int min, int max) //Nu iki deðer arasýnda random bir deðer belirle.
     {
@@ -115,10 +168,11 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < block.Length; i++)
         {
-            int count = UnityEngine.Random.Range(min, max);
+            int count = Random.Range(min, max);
             block[i].GetComponent<Block>().SetStartingCount(count); //Daha sonra bu deðeri Block scriptindeki Methoda parametre olarak gönder.
         }
     }
+
     public void CheckBlocks()
     {
         block = GameObject.FindGameObjectsWithTag("Block");
@@ -131,7 +185,7 @@ public class GameController : MonoBehaviour
             //Top sayýsýnda deðiþme oldugunda kaydedilmesi için, ekstra top ile devam edilebilmesi için.
             if (ballsCount >= PlayerPrefs.GetInt("BallsCount", 5))
                 PlayerPrefs.SetInt("BallsCount", ballsCount);
-            
+
             if (firstShot)
             {
                 score += 5;
